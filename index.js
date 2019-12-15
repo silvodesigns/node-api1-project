@@ -6,6 +6,10 @@ const db = require('./data/db.js');
 
 const server = express();
 
+//middleware that parses request body if it is json  when making post requests
+server.use(express.json());
+
+
 //EndPoints
 
 
@@ -38,6 +42,25 @@ server.get('/api/users/:id', (req, res) => {
             errorMessage: 'The users information could not be retrieved'
         })
     })
+  })
+
+
+  //posts a new users to database
+  server.post('/api/users', (req, res) => {
+
+      const {name, bio} = req.body;
+
+      if(!name || !bio){
+          res.status(400).json({errorMessage: "Please provide a name and bio"})
+      } else {
+          db.insert(req.body)
+          .then(user => {
+              res.status(201).json(user)
+          })
+          .catch(()=>{
+              res.status(500).json({errorMessage: "There was an error while saving the user"})
+          })
+      }
   })
   
 
