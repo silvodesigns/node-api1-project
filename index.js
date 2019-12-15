@@ -23,10 +23,15 @@ server.get('/api/users', (req, res) => {
 })
 
 
-server.get('/api/users', (req, res) => {
-    db.find()
+//returns user with a specific ID
+server.get('/api/users/:id', (req, res) => {
+    db.findById(req.params.id)
     .then(users => {
-        res.status(200).json(users);
+        if(users){
+            res.status(200).json(users);
+        } else {
+            res.status(404).json({message: "The user with given id does not exist"})
+        }
     })
     .catch(()=>{
         res.status(500).json({
